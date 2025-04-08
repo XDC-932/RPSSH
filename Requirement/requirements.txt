@@ -1,0 +1,5 @@
+numpy 
+matplotlib
+pyinstaller
+customtkinter
+paramiko
