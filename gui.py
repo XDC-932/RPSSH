@@ -24,34 +24,34 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 class windows():
     # 初始化cmd
-    cmd = cmd.Cmd()
+    cmd            = cmd.Cmd()
 
     # 初始化Info
-    info = ds.Info("-", ds.Channel.channel1.value, "-", "-", "-", -1)
+    info           = ds.Info("-", ds.Channel.channel1.value, "-", "-", "-", -1)
 
     # 创建data同于存放ssh接收到的数据
-    data = queue.Queue(maxsize=16384)
+    data           = queue.Queue(maxsize=16384)
 
     # 初始化ssh对象
-    ssh = None
+    ssh            = None
     
     # 初始化acquire线程
     acquire_thread = None
 
     # 初始化disp_thread线程
-    disp_thread = None
+    disp_thread    = None
 
     # 初始化按钮使能状态
-    bnt_en = ds.BntEnable()
+    bnt_en         = ds.BntEnable()
 
     # 初始化运行时消息
-    runtime_msg = "The program is running..."
+    runtime_msg    = "The program is running..."
 
     # 设置一次性显示的数据点的个数
-    sample_num = ds.SampleNum(1024)
+    sample_num     = ds.SampleNum(2048)
 
     # 设置采样率
-    rate = ds.Rate(1)
+    rate           = ds.Rate(1)
     
     def __init__(self):
         # 初始化配色方案
@@ -65,16 +65,16 @@ class windows():
         self.__set_window__()
 
         # 创建收纳base_ctl_frame和info_frame的frame
-        self.right_frame = self.__create_frame__(self.win, "right", "y", "ne")
+        self.right_frame    = self.__create_frame__(self.win, "right", "y", "ne")
 
         # 创建基本控件的frame
         self.base_ctl_frame = self.__create_frame__(self.right_frame, "top", "x")
 
         # 创建信息显示的frame
-        self.info_frame = self.__create_frame__(self.right_frame, "top", "x")
+        self.info_frame     = self.__create_frame__(self.right_frame, "top", "x")
 
         # 创建绘图frame
-        self.disp_frame = self.__create_frame__(self.win, "left", "both")
+        self.disp_frame     = self.__create_frame__(self.win, "left", "both")
 
         # 初始化base_ctl_frame的控件
         self.__add_base_ctl_frame__()
@@ -92,14 +92,14 @@ class windows():
     # 初始化软件的窗口
     def __set_window__(self, title="Upper Computer"):
         # 获取屏幕宽度和高度
-        self.screen_width = self.win.winfo_screenwidth()
+        self.screen_width  = self.win.winfo_screenwidth()
         self.screen_height = self.win.winfo_screenheight()
 
         # 设置窗口大小为屏幕的 90% 宽度和高度，并居中显示
         self.window_width  = int(self.screen_width  * 0.9)
         self.window_height = int(self.screen_height * 0.9)
-        self.x_position = (self.screen_width - self.window_width) // 2
-        self.y_position = (self.screen_height - self.window_height) // 2
+        self.x_position    = (self.screen_width - self.window_width) // 2
+        self.y_position    = (self.screen_height - self.window_height) // 2
         self.win.geometry(f"{self.window_width}x{self.window_height}+\
                                 {self.x_position}+{self.y_position}")
 
@@ -109,10 +109,10 @@ class windows():
     # 填充ctl_frame的控件
     def __add_base_ctl_frame__(self):
         # 创建ip输入框
-        self.ip_box = self.__create_entry__(self.base_ctl_frame, 0, 0, "IP Address")
+        self.ip_box       = self.__create_entry__(self.base_ctl_frame, 0, 0, "IP Address")
 
         # 创建通道选择框
-        val = [channel.value for channel in ds.Channel]
+        val                = [channel.value for channel in ds.Channel]
         self.ch_box        = self.__create_optionmenu__(self.base_ctl_frame, val, None, 0, 1)
 
         # 创建连接按钮
@@ -125,7 +125,7 @@ class windows():
                     lambda: self.cmd.start(self, self.ch_box.get()), 2, 0)
 
         # 创建run/stop按钮
-        self.run_stop_btn      = self.__create_button__(self.base_ctl_frame, "Run/Stop",
+        self.run_stop_btn  = self.__create_button__(self.base_ctl_frame, "Run/Stop",
                     lambda: self.cmd.run_stop(self), 2, 1)
 
         # 创建divy_plus按钮
@@ -145,19 +145,19 @@ class windows():
                     lambda: self.cmd.divx_sub(self),  4, 1)
 
         # 创建close按钮
-        self.close_btn = self.__create_button__(self.base_ctl_frame, "Close",
+        self.close_btn     = self.__create_button__(self.base_ctl_frame, "Close",
                     lambda: self.cmd.close(self), 5, 0)
         self.close_btn.grid(columnspan = 2)
 
         # 创建save按钮
-        self.save_btn = self.__create_button__(self.base_ctl_frame, "Save",
+        self.save_btn      = self.__create_button__(self.base_ctl_frame, "Save",
                     lambda: self.cmd.save(self), 6, 0)
         self.save_btn.grid(columnspan = 2)
     
     # 设置info_frame
     def __init_infor_frame__(self):
         # 创建info的textbox
-        self.info_box = self.__create_info_box__(self.info_frame, 0, 0, 400, 200)
+        self.info_box    = self.__create_info_box__(self.info_frame, 0, 0, 400, 200)
 
         # 启动info刷新线程
         self.info_thread = thread.daemon(self.cmd.__always_refresh_info__, self)
@@ -171,16 +171,17 @@ class windows():
     
     # 设置disp_frame用于包含plt绘图
     def __init__disp_frame__(self, parent):
-        self.figure = plt.Figure(figsize=(13, 4), dpi=100)
-        self.ax = self.figure.add_subplot(111)
-        self.canvas = FigureCanvasTkAgg(self.figure, master=parent)
+        self.figure        = plt.Figure(figsize=(13, 4), dpi=100)
+        self.ax            = self.figure.add_subplot(111)
+        self.canvas        = FigureCanvasTkAgg(self.figure, master=parent)
         self.canvas_widget = self.canvas.get_tk_widget()
         self.canvas_widget.pack(expand=True, fill="both")
 
     # 创建textbox用于显示info
     def __create_info_box__(self, parent, row, column, width=200, height=25):
-        textbox = ctk.CTkTextbox(parent, width=width, height=height, state="normal")
-        textbox.configure(font=("Courier", 12))  # 设置等宽字体
+        textbox                = ctk.CTkTextbox(parent, width=width, height=height, state="normal")
+        # 设置等宽字体
+        textbox.configure(font = ("Courier", 12))
         textbox.grid(row=row, column=column, padx=5, pady=5)
         return textbox
 

@@ -19,14 +19,14 @@ class TestDisp():
     # 测试显示功能函数
     def __test_show__(self, win):
         try:
-            win.runtime_msg = "demo test data"
-            win.info.state = ds.State.run.value
+            win.runtime_msg  = "demo test data"
+            win.info.state   = ds.State.run.value
             thread.daemon(self.__test_data_gen__, win)
             win.bnt_en.start = False
-            win.bnt_en.stop = True
-            win.disp_thread = thread.daemon(self.__auto_refresh_wave__, win)
+            win.bnt_en.stop  = True
+            win.disp_thread  = thread.daemon(self.__auto_refresh_wave__, win)
         except Exception as e:
-            win.runtime_msg = f"Test show failed: {e}"
+            win.runtime_msg  = f"Test show failed: {e}"
             raise e
 
     # 测试数据生成

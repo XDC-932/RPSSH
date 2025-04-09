@@ -16,7 +16,7 @@ import enum
 
 # 运行状态
 class State(enum.Enum):
-    run = "Run"
+    run  = "Run"
     stop = "Stop"
 
 # 通道
@@ -31,6 +31,7 @@ class Info():
         self.ch    = ch
         self.max   = max
         self.min   = min
+        self.avg   = '-'
         self.freq  = freq
         self.divy  = divy
         self.state = State.stop.value
@@ -44,12 +45,13 @@ class BntEnable():
         self.close   = False
 
 # 格式化Info字符串
-def InfoStr(ip, ch, max, min, freq, divy, state):
+def InfoStr(ip, ch, max, min, avg,freq, divy, state):
     return (
         f"DeviceIP  : {ip}\n"
         f"Channel   : {ch}\n"
         f"Max       : {max}(v)\n"
         f"Min       : {min}(v)\n"
+        f"AVG       : {avg}(v)\n"
         f"Freq      : {freq}(Hz)\n"
         f"Div       : {divy}(v/div)\n"
         f"Run/Stop  : {state}\n"
@@ -59,8 +61,8 @@ def InfoStr(ip, ch, max, min, freq, divy, state):
 class SampleNum():
     def __init__(self, num):
         self.num = num
-        self.max = 8192
-        self.min = 128
+        self.max = 16384
+        self.min = 1024
 
 # 采样率相关设定
 class Rate():
